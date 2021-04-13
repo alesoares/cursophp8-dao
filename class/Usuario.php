@@ -76,6 +76,7 @@ class Usuario {
         return $this;
     }
 
+// TRAZ SOMENTE O ÚNICO USUÁRIO CADASTRADO NO BANCO CORRESPONDENTE AO SEU ID OU QUALQUER COISA QUE O IDENTIFQUE CONFORME SOLICITAÇÃO PROGRAMÁVEL
     public function loadById( $id ) {
 
     	$sql = new SQL();
@@ -90,10 +91,50 @@ class Usuario {
     		$this -> setDeslogin( $row[ 'deslogin' ] );
     		$this -> setDessenha( $row[ 'dessenha' ] );
     		$this -> setDtcadastro( new DateTime( $row[ 'dtcadastro' ] ) );
-
     	}
+    }
+
+// TRAZ UMA LISTA CONTENDO TODOS OS USUÁRIOS CADATRADOS NO BANCO
+    public static function getList() {
+
+        $sql = new SQL();
+
+        return $sql -> select( "SELECT * FROM tb_usuarios ORDER BY deslogin");
+    }
+
+// TRAZ UM USUÁRIO ESPECÍFICO CONFORME PARÂMETRO PROGRÁMAVEL
+    public static function search( $Login ) {
+
+        $sql = new Sql();
+
+        return $sql -> select( "SELECT * FROM tb_usuarios WHERE deslogin LIKE :SEARCH ORDER BY deslogin", array(
+                ":SEARCH" => "%" . $Login . "%"
+        ));
+    }
+
+// TRAZ DADOS DE UM USUÁRIO LOGADO NO SISTEMA 
+    public function login( $Login, $Password ) {
+        
+        $sql = new SQL();
+
+        $results = $sql -> select( "SELECT * FROM tb_usuarios WHERE deslogin = :LOGIN AND dessenha = :PASSWORD", array( ":LOGIN" => $Login,
+            "PASSWORD" => $Password
+        ) );
+
+        if ( count( $results ) > 0 ) {
+            
+            $row = $results[0];
+
+            $this -> setIdusuario( $row[ 'idusuario' ] );
+            $this -> setDeslogin( $row[ 'deslogin' ] );
+            $this -> setDessenha( $row[ 'dessenha' ] );
+            $this -> setDtcadastro( new DateTime( $row[ 'dtcadastro' ] ) );
+        } else{
+            throw new Exception( "Login e/ou senha inválidos." );            
+        }
 
     }
+
 
     public function __toString() {
 

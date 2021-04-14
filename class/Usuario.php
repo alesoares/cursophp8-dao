@@ -7,6 +7,15 @@ class Usuario {
 	private $dessenha;
 	private $dtcadastro;
 
+// DESSA FORMA OMDE JÁ HAVIAMOS FEITO NÃO DARÁ ERRO PASSANDO COMO VÁZIO OS PARÂMETROS
+// TUDO PARA MODIFICAR NO INDEX.PHP A FORMA DE CHAMAR DIMINUINDO AS LINHAS AGORA
+    public function __construct( $Login = "", $Password = "" ) {
+
+        $this -> setDeslogin( $Login );
+        $this -> setDessenha( $Password );
+
+    }
+
     /**
      * @return mixed
      */
@@ -83,14 +92,8 @@ class Usuario {
 
     	$results = $sql -> select( "SELECT * FROM tb_usuarios WHERE idusuario = :ID", array( ":ID" => $id ) );
 
-    	if ( count( $results ) > 0 ) {
-    		
-    		$row = $results[0];
-
-    		$this -> setIdusuario( $row[ 'idusuario' ] );
-    		$this -> setDeslogin( $row[ 'deslogin' ] );
-    		$this -> setDessenha( $row[ 'dessenha' ] );
-    		$this -> setDtcadastro( new DateTime( $row[ 'dtcadastro' ] ) );
+    	if ( count( $results ) > 0 ) {    		
+    		$this -> setData( $results[0] );
     	}
     }
 
@@ -123,38 +126,44 @@ class Usuario {
 
         if ( count( $results ) > 0 ) {
             
-            $row = $results[0];
+            $this -> setData( $results[0] );
 
-            $this -> setIdusuario( $row[ 'idusuario' ] );
-            $this -> setDeslogin( $row[ 'deslogin' ] );
-            $this -> setDessenha( $row[ 'dessenha' ] );
-            $this -> setDtcadastro( new DateTime( $row[ 'dtcadastro' ] ) );
         } else{
             throw new Exception( "Login e/ou senha inválidos." );            
         }
-
     }
 
+// FAZ A INSERÇÃO DO USUÁRIO NO BANCO DE DADOS COM UMA PROCEDURE
+    public function insert() {
+
+        $sql = new SQL();
+
+        $results = $sql -> select( "CALL sp_usuarios_insert( :LOGIN, :PASSWORD )", array( ":LOGIN" => $this -> getDesLogin(),
+            "PASSWORD" => $this -> getDessenha()
+        ) );
+         if ( count( $results ) > 0 ) {            
+            $this -> setData( $results[0] );
+        } 
+    }
+
+// TRAZ OS DADOS GRAVADOS NO BANCO PELOS MODIFICADORES DE ACESSO SETTERS
+    public function setData( $data ) {
+
+        $this -> setIdusuario( $data[ 'idusuario' ] );
+        $this -> setDeslogin( $data[ 'deslogin' ] );
+        $this -> setDessenha( $data[ 'dessenha' ] );
+        $this -> setDtcadastro( new DateTime( $data[ 'dtcadastro' ] ) );
+    }
 
     public function __toString() {
-
     	return json_encode( array(
     		"idusuario"  => $this -> getIdusuario(),
     		"deslogin"   => $this -> getDeslogin(),
     		"dessenha"   => $this -> getDessenha(),
     		"dtcadastro" => $this -> getDtcadastro() -> format( "d/m/Y  H:i:s")
     	));
-
-
     }
 
 }
-
-
-
-
-
-
-
 
 ?>

@@ -25,12 +25,25 @@ echo json_encode( $search );
 */
 
 // NESTA FORMA DE CHAMADA UM USUÁRIO ESPECÍFICO PROGRAMÁVEL(POR INPUTS DA VIDA) COM SEU LOGIN E SENHA TEMOS SEUS DADOS VINDO DO BANCO DE DADOS; CONFORME MÉTODO "login" FOI CRIADO SEM SEU MODIFICADOR DE ACESSO "STATIC" O QUE O AMARRA A CLASSE EM QUESTÃO; JA NÃO POSSO CHAMA-LO DIRETO POR SEU OBJETO INSTANCIADO DA CLASSE "USUARIO.PHP"
-
+/*
 $usuario = new Usuario();
 
 $usuario -> login( "alessandro", "soa1@1res" );
 
 echo $usuario;
+*/
+
+// NESTA FORMA DE CHAMADA UM USUÁRIO ESPECÍFICO PROGRAMÁVEL(POR INPUTS DA VIDA) COM SEU LOGIN E SENHA É INSERIDO NO BANCO DE DADOS E AO MESMO TEMPO CRIAMOS UMA PROCEDURE QUE TRANS DO BANCO SEU ID A A DTA DE CADASTRO VINDO DO BANCO DE DADOS; CONFORME MÉTODO "insert" FOI CRIADO SEM SEU MODIFICADOR DE ACESSO "STATIC" O QUE O AMARRA A CLASSE EM QUESTÃO; JA NÃO POSSO CHAMA-LO DIRETO POR SEU OBJETO INSTANCIADO DA CLASSE "USUARIO.PHP"
+$aluno = new Usuario( "aluno com construtor", "@aluno com construtor" );
+//$aluno = new Usuario();
+
+//$aluno -> setDeslogin( "aluno antes do construtor"  );
+//$aluno -> setDessenha( "@aluno antes do construtor" );
+
+$aluno -> insert();
+
+echo $aluno;
+
 
 
 ?>

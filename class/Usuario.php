@@ -13,7 +13,6 @@ class Usuario {
 
         $this -> setDeslogin( $Login );
         $this -> setDessenha( $Password );
-
     }
 
     /**
@@ -84,6 +83,15 @@ class Usuario {
         $this->dtcadastro = $dtcadastro;
         return $this;
     }
+    
+// TRAZ OS DADOS GRAVADOS NO BANCO PELOS MODIFICADORES DE ACESSO SETTERS
+    public function setData( $data ) {
+
+        $this -> setIdusuario( $data[ 'idusuario' ] );
+        $this -> setDeslogin( $data[ 'deslogin' ] );
+        $this -> setDessenha( $data[ 'dessenha' ] );
+        $this -> setDtcadastro( new DateTime( $data[ 'dtcadastro' ] ) );
+    }
 
 // TRAZ SOMENTE O ÚNICO USUÁRIO CADASTRADO NO BANCO CORRESPONDENTE AO SEU ID OU QUALQUER COISA QUE O IDENTIFQUE CONFORME SOLICITAÇÃO PROGRAMÁVEL
     public function loadById( $id ) {
@@ -146,13 +154,19 @@ class Usuario {
         } 
     }
 
-// TRAZ OS DADOS GRAVADOS NO BANCO PELOS MODIFICADORES DE ACESSO SETTERS
-    public function setData( $data ) {
+// FAZALTERAÇÃO NOS DADOS NO BANCO DE DADOS 
+    public function update( $login, $password ) {
 
-        $this -> setIdusuario( $data[ 'idusuario' ] );
-        $this -> setDeslogin( $data[ 'deslogin' ] );
-        $this -> setDessenha( $data[ 'dessenha' ] );
-        $this -> setDtcadastro( new DateTime( $data[ 'dtcadastro' ] ) );
+        $this -> setDeslogin( $login );
+        $this -> setDessenha( $password );
+
+        $sql = new SQL();
+
+        $sql -> execQuery( "UPDATE tb_usuarios SET deslogin = :LOGIN, dessenha = :PASSWORD WHERE idusuario = :ID", array(
+                    ':LOGIN' => $this -> getDeslogin(),
+                    ':PASSWORD' => $this -> getDessenha(),
+                    ':ID' => $this -> getIdusuario()
+        ));
     }
 
     public function __toString() {

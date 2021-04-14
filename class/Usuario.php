@@ -154,7 +154,7 @@ class Usuario {
         } 
     }
 
-// FAZALTERAÇÃO NOS DADOS NO BANCO DE DADOS 
+// FAZ ALTERAÇÃO NOS DADOS NO BANCO DE DADOS 
     public function update( $login, $password ) {
 
         $this -> setDeslogin( $login );
@@ -167,6 +167,22 @@ class Usuario {
                     ':PASSWORD' => $this -> getDessenha(),
                     ':ID' => $this -> getIdusuario()
         ));
+    }
+
+// APAGA UM USUÁRIO DO BANCO DE DADOS
+    public function delete() {
+
+        $sql = new SQL();
+
+        $sql -> execQuery( "DELETE FROM tb_usuarios WHERE idusuario = :ID", array(
+            ':ID' => $this -> getIdusuario()
+        ));
+
+        $this -> setIdusuario( 0 );
+        $this -> setDeslogin( "" );
+        $this -> setDessenha( "" );
+        $this -> setDtcadastro( new DateTime() );
+
     }
 
     public function __toString() {
